@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  cart   Cart?
+  orders Order[]
+}
+
+// Money is always stored as integer cents (never floats).
+// CHECK (stock >= 0) is added in the second migration: it is the last line of defence against overselling.
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  priceCents  Int
+  stock       Int
+  // "Deleting" a product only sets this to false, so past orders keep a valid reference.
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([isActive, createdAt])
+}
+
+// One cart per user.
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  // A product appears at most once per cart; adding it again increases the quantity.
+  @@unique([cartId, productId])
+  @@index([productId])
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  userId         String
+  status         OrderStatus @default(PENDING)
+  totalCents     Int
+  // Supplied by the client (Idempotency-Key header). Makes retries and double-clicks safe.
+  idempotencyKey String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items OrderItem[]
+
+  @@unique([userId, idempotencyKey])
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+// A snapshot of what was bought: name and unit price are copied at purchase time,
+// so later product edits never change past orders.
+model OrderItem {
+  id             String @id @default(uuid())
+  orderId        String
+  productId      String
+  productName    String
+  unitPriceCents Int
+  quantity       Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+}
