@@ -11,6 +11,8 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
     "test:watch": "vitest",
     "demo": "tsx scripts/demo.ts",
     "db:up": "docker compose up -d",

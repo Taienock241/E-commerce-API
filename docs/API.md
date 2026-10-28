@@ -148,6 +148,30 @@ Customers cannot call these endpoints (`403`).
 
 `GET /health` → `{ "status": "ok" }`
 
+`GET /` returns API information, including the available endpoint list and link to this document:
+
+```json
+{
+  "name": "E-commerce API",
+  "status": "ok",
+  "endpoints": ["/health", "/products", "/auth/register", "/auth/login", "/cart", "/orders", "/admin/orders"],
+  "docs": "See docs/API.md"
+}
+```
+
+## Error codes
+
+| Code | HTTP status | When it is returned |
+| --- | ---: | --- |
+| `VALIDATION_ERROR`, `INVALID_JSON`, `INVALID_IDEMPOTENCY_KEY`, `EMPTY_CART`, `ORDER_TOTAL_TOO_LARGE` | 400 | Invalid input, malformed JSON, missing/invalid checkout key, empty cart, or total exceeds the supported maximum |
+| `UNAUTHENTICATED`, `INVALID_TOKEN`, `INVALID_CREDENTIALS` | 401 | Missing/invalid authentication or login failure |
+| `FORBIDDEN` | 403 | Authenticated user lacks admin permission |
+| `NOT_FOUND`, `PRODUCT_NOT_FOUND`, `CART_ITEM_NOT_FOUND`, `ORDER_NOT_FOUND` | 404 | Route or requested resource does not exist; another customer's order/cart item is also hidden as not found |
+| `EMAIL_TAKEN`, `INSUFFICIENT_STOCK`, `PRODUCT_UNAVAILABLE`, `ORDER_NOT_CANCELLABLE`, `INVALID_STATUS_TRANSITION`, `ORDER_STATUS_CHANGED` | 409 | Duplicate email, stock conflict, unavailable product, prohibited cancellation/status change, or concurrent status update |
+| `RATE_LIMITED` | 429 | Login/registration rate limit exceeded |
+| `PAYLOAD_TOO_LARGE` | 413 | JSON body exceeds the configured limit |
+| `INTERNAL_ERROR` | 500 | Unexpected server error; internal details are not returned |
+
 ## Example session (curl)
 
 ```bash

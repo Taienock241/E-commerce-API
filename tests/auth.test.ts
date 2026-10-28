@@ -14,7 +14,7 @@ describe("POST /auth/register", () => {
     expect(res.status).toBe(201);
     expect(res.body.token).toEqual(expect.any(String));
     expect(res.body.user).toMatchObject({ email: "ann@example.com", role: "CUSTOMER" });
-    expect(res.body.user.passwordHash).  toBeUndefined();
+    expect(res.body.user.passwordHash).toBeUndefined();
   });
 
   it("stores a bcrypt hash, not the plain password", async () => {

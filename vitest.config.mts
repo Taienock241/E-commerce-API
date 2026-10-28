@@ -1,5 +1,5 @@
 import { defineConfig } from "vitest/config";
-import { TEST_DATABASE_URL } from "./tests/testDb";
+import { TEST_DATABASE_URL } from "./tests/testDb.js";
 
 export default defineConfig({
   test: {

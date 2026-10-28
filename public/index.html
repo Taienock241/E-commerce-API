@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Everyday Store</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #17211c; background: #f6f7f4; }
+      body { margin: 0; }
+      header { display: flex; justify-content: space-between; align-items: center; padding: 1rem max(1rem, calc((100vw - 1100px) / 2)); background: #173d2b; color: white; }
+      header h1 { margin: 0; font-size: 1.25rem; }
+      button, input, select { font: inherit; padding: .55rem .75rem; border-radius: .45rem; border: 1px solid #cbd4cd; }
+      button { cursor: pointer; background: #286746; color: white; border: 0; }
+      button.secondary { background: #e8eee9; color: #173d2b; }
+      button.danger { background: #a33333; }
+      main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+      .toolbar, .row { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+      .toolbar input { flex: 1; min-width: 200px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+      .card, section.panel { background: white; border: 1px solid #e0e6e1; border-radius: .8rem; padding: 1rem; }
+      .card h3 { margin: .25rem 0; }
+      .muted { color: #58675e; }
+      .price { font-weight: 700; }
+      section.panel { margin: 1rem 0; }
+      #cart-panel { position: fixed; z-index: 5; right: 0; top: 0; bottom: 0; width: min(430px, calc(100% - 2rem)); overflow-y: auto; margin: 0; border-radius: 0; box-shadow: -8px 0 30px #0002; }
+      section.panel h2 { margin-top: 0; }
+      .line { display: flex; justify-content: space-between; align-items: center; gap: .7rem; padding: .7rem 0; border-bottom: 1px solid #edf0ed; }
+      .line:last-child { border: 0; }
+      dialog { border: 0; border-radius: .8rem; width: min(420px, calc(100% - 2rem)); box-shadow: 0 12px 40px #0003; }
+      dialog form { display: grid; gap: .7rem; }
+      .notice { min-height: 1.5rem; color: #a33333; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: .6rem; border-bottom: 1px solid #edf0ed; }
+      .hidden { display: none !important; }
+      @media (max-width: 600px) { header { padding: 1rem; } table { font-size: .85rem; } th, td { padding: .35rem; } }
+    </style>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Everyday Store</h1>
+      <div class="row">
+        <span id="account-label">Browsing as guest</span>
+        <button class="secondary" id="account-button">Log in</button>
+        <button id="cart-toggle">Cart (<span id="cart-count">0</span>)</button>
+      </div>
+    </header>
+    <main>
+      <section class="toolbar" aria-label="Product search">
+        <input id="search" type="search" placeholder="Search products" />
+        <button id="search-button">Search</button>
+      </section>
+      <p class="notice" id="notice" role="status"></p>
+      <section class="grid" id="products" aria-live="polite"></section>
+      <div class="row"><button class="secondary" id="previous-page">Previous</button><span id="page-label"></span><button class="secondary" id="next-page">Next</button></div>
+
+      <section class="panel hidden" id="cart-panel">
+        <h2>Your cart</h2><div id="cart-items"></div><p id="cart-total"></p>
+        <div class="row"><button id="checkout-button">Place order</button><button class="secondary" id="close-cart">Close</button></div>
+      </section>
+      <section class="panel hidden" id="orders-panel"><h2>Your orders</h2><div id="orders"></div></section>
+      <section class="panel hidden" id="admin-panel">
+        <h2>Admin products</h2>
+        <form id="create-product" class="row">
+          <input name="name" placeholder="Product name" required />
+          <input name="description" placeholder="Description" />
+          <input name="priceCents" type="number" min="0" placeholder="Price in cents" required />
+          <input name="stock" type="number" min="0" placeholder="Stock" required />
+          <button>Create product</button>
+        </form>
+        <div id="admin-products"></div>
+        <h2>Manage orders</h2>
+        <div class="row"><select id="admin-status"><option value="">All statuses</option><option>PENDING</option><option>PAID</option><option>SHIPPED</option><option>DELIVERED</option><option>CANCELLED</option></select><button id="refresh-admin-orders">Refresh</button></div>
+        <div id="admin-orders"></div>
+      </section>
+    </main>
+    <dialog id="auth-dialog">
+      <form id="auth-form" method="dialog">
+        <h2 id="auth-title">Log in</h2>
+        <label id="name-field" class="hidden">Name<input name="name" autocomplete="name" /></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required minlength="8" /></label>
+        <p class="notice" id="auth-error"></p>
+        <button id="auth-submit" type="submit">Log in</button>
+        <button id="auth-switch" class="secondary" type="button">Create an account</button>
+        <button id="auth-cancel" class="secondary" type="button">Cancel</button>
+      </form>
+    </dialog>
+  </body>
+</html>

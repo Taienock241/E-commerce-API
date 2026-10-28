@@ -30,6 +30,16 @@ npm run db:seed               # creates an admin, a demo customer and sample pro
 npm run dev                   # http://localhost:3000
 ```
 
+The browser storefront is available at `http://localhost:3000/index.html`. `GET /` returns a JSON API
+summary, and the static page and JavaScript are served from `public/`.
+
+## Frontend
+
+The React single-page app lives in `web/` and uses the Express API. Start the API with `npm run dev`,
+then run `npm run web:dev` in another terminal and open the Vite URL it prints. For production assets,
+run `npm run web:build`; Express serves the built app at `/index.html` from `web/dist` when it exists. The earlier `public/` page remains
+available as a fallback when no React build is present.
+
 Seeded accounts (change the admin password in `.env` before seeding anywhere real):
 
 | Role     | Email                  | Password       |
