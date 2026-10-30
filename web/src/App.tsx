@@ -80,6 +80,7 @@ function ProductPage() {
     else if (detailDialog.current?.open) detailDialog.current.close();
   }, [selected]);
 
+
   const query = useQuery({
     queryKey: ["products", urlSearch, page],
     queryFn: () => api.get<Page<Product>>(`/products?${new URLSearchParams({ search: urlSearch, page: String(page), limit: "12" })}`),
