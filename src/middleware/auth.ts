@@ -24,6 +24,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
     throw new AppError(401, "UNAUTHENTICATED", "Authentication required");
   }
 
+
   let userId: string;
   try {
     const payload = jwt.verify(header.slice("Bearer ".length), config.jwtSecret, { algorithms: ["HS256"] });
