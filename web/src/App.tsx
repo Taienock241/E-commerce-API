@@ -29,10 +29,12 @@ function Shell() {
   const count = cartQuery.data?.itemCount ?? 0;
 
   return <div className="app-shell">
+    <div className="announcement-bar"><span>Good design. Good days.</span><span>Free delivery on orders over $75 <span aria-hidden="true">↗</span></span><span className="announcement-location">Made for the everyday <span aria-hidden="true">✳</span></span></div>
     <header className="site-header">
-      <Link className="brand" to="/" aria-label="Common Goods home"><span className="brand-mark">C</span><span>common goods<span className="brand-period">.</span></span></Link>
+      <Link className="brand" to="/" aria-label="Common Goods home"><span className="brand-mark" aria-hidden="true">✳</span><span>COMMON<br className="brand-break" /> GOODS<span className="brand-period">®</span></span></Link>
       <nav className="site-nav" aria-label="Main navigation">
-        <Link to="/">Shop</Link>
+        <Link to="/">Shop all</Link>
+        <a href="#catalogue">Everyday essentials</a>
         {token && <Link to="/orders">Orders</Link>}
         {user?.role === "ADMIN" && <Link to="/admin">Admin</Link>}
       </nav>
@@ -44,7 +46,7 @@ function Shell() {
       </div>
     </header>
     <main className="main-content"><Outlet /></main>
-    <footer className="site-footer"><span>Thoughtful things for everyday life.</span><span>Secure checkout · Integer cents · No surprises</span></footer>
+    <footer className="site-footer"><span>Thoughtful things for everyday life.</span><span>Good design. Good days. <span aria-hidden="true">✳</span></span></footer>
     <CartDrawer open={cartOpen} onClose={closeCart} />
   </div>;
 }
@@ -99,14 +101,24 @@ function ProductPage() {
 
   return <>
     <section className="hero">
-      <div className="eyebrow">A little more considered</div>
-      <h1>Good things<br /><em>for every day.</em></h1>
-      <p>Useful, well-made essentials that make the everyday feel a little better.</p>
-      <button className="text-link hero-cta" onClick={() => document.getElementById("catalogue")?.scrollIntoView({ behavior: "smooth" })}>Explore the collection <span aria-hidden="true">↓</span></button>
-      <div className="hero-stamp" aria-hidden="true"><span>OBJECTS<br />WITH<br />PURPOSE</span><b>✳</b></div>
+      <div className="hero-copy">
+        <div className="eyebrow"><span className="eyebrow-dot" /> Everyday things, thoughtfully chosen</div>
+        <h1>Make room<br />for <em>good things.</em></h1>
+        <p>Everyday essentials with a little more thought behind them. Useful by nature. Better by design.</p>
+        <button className="button hero-cta" onClick={() => document.getElementById("catalogue")?.scrollIntoView({ behavior: "smooth" })}>Explore the collection <span aria-hidden="true">↗</span></button>
+        <div className="hero-note"><span>01 — 08</span><span>Thoughtful finds for everyday life</span></div>
+      </div>
+      <div className="hero-art" aria-hidden="true">
+        <div className="hero-orbit hero-orbit--one"/><div className="hero-orbit hero-orbit--two"/>
+        <div className="hero-sun"/><div className="hero-leaf hero-leaf--one"/><div className="hero-leaf hero-leaf--two"/><div className="hero-leaf hero-leaf--three"/>
+        <div className="hero-product-mark">GOOD<br/>THINGS<span>®</span></div>
+        <div className="hero-side-note">USEFUL BY NATURE · BETTER BY DESIGN</div>
+        <div className="hero-art-caption"><span>Thoughtfully considered</span><span>Est. for everyday ↗</span></div>
+      </div>
     </section>
     <section className="catalogue" id="catalogue">
-      <div className="section-heading"><div><div className="eyebrow">Made to be used</div><h2>The collection</h2></div><span className="result-count">{query.data?.meta.total ?? "—"} pieces</span></div>
+      <div className="catalogue-intro"><span className="eyebrow"><span className="eyebrow-dot"/> The good stuff</span><span className="catalogue-manifesto">Considered design.<br/><em>Every single day.</em></span><p>Simple things. Done well.<br/>The little upgrades your everyday deserves.</p></div>
+      <div className="section-heading"><div><div className="eyebrow">Made to be used, made to last</div><h2>Shop the collection<span>.</span></h2></div><span className="result-count">{query.data?.meta.total ?? "—"} good finds</span></div>
       <div className="catalogue-tools"><label className="search-box"><span aria-hidden="true">⌕</span><span className="visually-hidden">Search products</span><input value={searchText} onChange={(event) => setSearchText(event.target.value)} placeholder="Search the collection" /></label><span className="tool-note">Thoughtfully selected, always useful</span></div>
       {query.isLoading ? <div className="product-grid" aria-label="Loading products">{Array.from({ length: 6 }, (_, index) => <div className="skeleton-card" key={index}><div className="skeleton-image" /><div className="skeleton-line" /><div className="skeleton-line skeleton-line--short" /></div>)}</div>
         : query.isError ? <div className="page-state error-state"><p>We couldn’t load the collection.</p><button className="button" onClick={() => void query.refetch()}>Try again</button></div>
