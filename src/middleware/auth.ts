@@ -39,6 +39,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
 
   req.user = user;
   next();
+  
 }
 
 /** Authorization: is this caller allowed to do this? Always used after requireAuth. */
