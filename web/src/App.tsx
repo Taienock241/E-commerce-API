@@ -10,7 +10,7 @@ import { currencyUnitsToCents, formatMoney } from "./lib/money";
 import { allowedNextStatuses, progressStatuses } from "./orders/status";
 import { useToast } from "./ui/ToastContext";
 
-const CART_KEY = ["cart"] as const;
+const CART_KEY = ["cart"] as  const;
 const LOGIN_PATH = "/login";
 
 function Protected({ admin = false }: { admin?: boolean }) {
@@ -21,7 +21,7 @@ function Protected({ admin = false }: { admin?: boolean }) {
   return <Outlet />;
 }
 
-function Shell() {
+function Shell()   {
   const { user, token, logout } = useAuth();
   const [cartOpen, setCartOpen] = useState(false);
   const closeCart = useCallback(() => setCartOpen(false), []);

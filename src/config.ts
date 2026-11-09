@@ -29,5 +29,5 @@ export const config = {
   databaseUrl: env.DATABASE_URL,
   jwtSecret: env.JWT_SECRET,
   jwtExpiresIn: env.JWT_EXPIRES_IN,
-  bcryptRounds: env.BCRYPT_ROUNDS,
+  bcryptRounds: env.BCRYPT_ROUNDS ,
 } as const;
